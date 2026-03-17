@@ -383,7 +383,7 @@ pub struct UserRequest {
 #[serde(untagged)]
 pub enum TgId {
     String(String),
-    Int(u32),
+    Int(u64),
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
