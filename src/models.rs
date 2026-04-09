@@ -84,6 +84,7 @@ pub struct Inbounds {
         serialize_with = "se_settings_as_str"
     )]
     pub settings: Settings,
+    #[serde(rename = "streamSettings")]
     pub stream_settings: Option<StreamSettings>,
     pub tag: String,
     #[serde(
