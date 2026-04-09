@@ -296,9 +296,17 @@ where
     match opt {
         None => Ok(None),
 
-        Some(Wire::Str(s)) => serde_json::from_str(&s)
-            .map(Some)
-            .map_err(serde::de::Error::custom),
+        Some(Wire::Str(s)) => {
+            let s = s.trim();
+
+            if s.is_empty() {
+                return Ok(None);
+            }
+
+            serde_json::from_str(s)
+                .map(Some)
+                .map_err(serde::de::Error::custom)
+        }
 
         Some(Wire::Map(m)) => Ok(Some(m)),
     }
