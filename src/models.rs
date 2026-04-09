@@ -84,7 +84,11 @@ pub struct Inbounds {
         serialize_with = "se_settings_as_str"
     )]
     pub settings: Settings,
-    #[serde(rename = "streamSettings")]
+    #[serde(
+        rename = "streamSettings",
+        deserialize_with = "de_json_opt_from_str_or_map",
+        serialize_with = "se_json_opt_as_str"
+    )]
     pub stream_settings: Option<StreamSettings>,
     pub tag: String,
     #[serde(
@@ -286,10 +290,16 @@ where
         Str(String),
         Map(T),
     }
+
     let opt = Option::<Wire<T>>::deserialize(d)?;
+
     match opt {
         None => Ok(None),
-        Some(Wire::Str(s)) => serde_json::from_str(&s).map_err(serde::de::Error::custom),
+
+        Some(Wire::Str(s)) => serde_json::from_str(&s)
+            .map(Some)
+            .map_err(serde::de::Error::custom),
+
         Some(Wire::Map(m)) => Ok(Some(m)),
     }
 }
